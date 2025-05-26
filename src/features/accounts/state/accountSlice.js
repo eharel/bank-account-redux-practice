@@ -69,15 +69,36 @@ const accountSlice = createSlice({
   },
 });
 
+// Thunks, but not in the React Toolkit way
+export function deposit(amount, currency = "USD") {
+  console.log(currency);
+  if (currency === "USD") {
+    return {
+      type: "account/deposit",
+      payload: amount,
+    };
+  }
+
+  return async function (dispatch, getState) {
+    dispatch({ type: "account/convertCurrency" });
+    const targetCurrency = "USD";
+
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=${targetCurrency}`
+    );
+
+    const data = await res.json();
+
+    dispatch({
+      type: "account/deposit",
+      payload: data.rates.USD,
+    });
+  };
+}
+
 export default accountSlice.reducer;
-export const {
-  deposit,
-  withdraw,
-  requestLoan,
-  payLoan,
-  convertCurrency,
-  loading,
-} = accountSlice.actions;
+export const { withdraw, requestLoan, payLoan, convertCurrency, loading } =
+  accountSlice.actions;
 
 // OLD VERSION USING SWITCH CASES
 // export default function accountReducer(state = initialState, action) {
