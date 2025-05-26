@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deposit, loanPayback, loanRequest, withdraw } from "./state/actions";
+import { payLoan, requestLoan } from "./state/accountSlice";
 
 function AccountOperations() {
   const [depositAmount, setDepositAmount] = useState("");
@@ -57,14 +58,14 @@ function AccountOperations() {
       alert("Please provide a purpose for the loan.");
       return;
     }
-    dispatch(loanRequest(loanAmount, loanPurpose));
+    dispatch(requestLoan(Number(loanAmount), loanPurpose));
     // alert(`Requested loan of ${loanAmount} ${currency} for ${loanPurpose}`);
     setLoanAmount("");
     setLoanPurpose("");
   }
 
   function handlePayLoan() {
-    dispatch(loanPayback());
+    dispatch(payLoan());
     // alert(`Paid back loan of ${account.loan} ${currency}`);
   }
 
